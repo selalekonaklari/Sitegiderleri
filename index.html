@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Haziran 2026 · Gelir–Gider Defteri</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="brand">Gelir–Gider Defteri</span>
+  <a href="index.html" class="active">Genel Bakış</a>
+  <a href="giderler.html">Giderler</a>
+  <a href="gelirler.html">Gelirler</a>
+  <a href="kasa.html">Kasa &amp; Fon</a>
+</nav>
+
+<header class="page-header">
+  <p class="eyebrow">Site Yönetimi &nbsp;·&nbsp; 01 – 30 Haziran 2026</p>
+  <h1>Genel Bakış</h1>
+  <p class="subtitle">Haziran ayına ait gelir ve gider durumunun özeti. Ayrıntılı dağılım için üstteki menüden ilgili sayfaya geçebilirsiniz.</p>
+</header>
+
+<section class="hero">
+  <div class="hero-cell income">
+    <div class="label">Gelirler Toplamı</div>
+    <div class="amount">₺622.209,00</div>
+    <div class="sub">72 aidat ödemesi dahil, 4 kalemden oluşuyor</div>
+  </div>
+  <div class="hero-cell expense">
+    <div class="label">Giderler Toplamı</div>
+    <div class="amount">₺390.105,82</div>
+    <div class="sub">En büyük kalem: Güvenlik (₺190.800,00)</div>
+  </div>
+  <div class="hero-cell net">
+    <div class="label">Gelir – Gider Farkı</div>
+    <div class="amount">+ ₺232.103,18</div>
+    <div class="sub">Ay sonunda pozitif bakiye</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Gelir / Gider Dağılımı</h2>
+  </div>
+  <div class="section-body">
+    <div class="chart-grid">
+      <div class="chart-box">
+        <div class="donut-wrap" id="balanceChartWrap">
+          <div class="donut" id="balanceChart"></div>
+          <div class="donut-hole"><div class="value"></div><div class="label"></div></div>
+        </div>
+        <div class="chart-caption">Toplam ₺1.012.314,82 üzerinden pay</div>
+      </div>
+      <div>
+        <div class="legend-list" id="balanceLegend"></div>
+        <p style="font-size:13px; color:var(--ink-soft); margin-top:18px; line-height:1.6;">
+          Haziran ayında toplam gelirin <strong style="color:var(--income)">%61,5</strong>'i tahsil edilirken, giderler toplamın
+          <strong style="color:var(--expense)">%38,5</strong>'ini oluşturdu. Aradaki fark olan
+          <strong style="color:var(--navy)">₺232.103,18</strong> kasaya pozitif bakiye olarak yansıdı.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top:24px;">
+  <div class="section-head">
+    <h2>Özet Tablo</h2>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Kalem</th><th class="num">Tutar</th><th class="num">Toplam İçindeki Pay</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="cat"><span class="cat-dot" style="background:#1F6F5C"></span>Gelirler Toplamı</td><td class="num" style="color:var(--income)">₺622.209,00</td><td class="num">%61,5</td></tr>
+          <tr><td class="cat"><span class="cat-dot" style="background:#A8422A"></span>Giderler Toplamı</td><td class="num" style="color:var(--expense)">₺390.105,82</td><td class="num">%38,5</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td class="cat">Gelir – Gider Farkı</td><td class="num" colspan="2" style="color:var(--navy)">+ ₺232.103,18</td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="nav-cards">
+  <a class="nav-card" href="giderler.html">
+    <div class="tag">12 Kalem</div>
+    <h3>Giderler</h3>
+    <p>Güvenlik, personel, SGK, elektrik, su ve diğer tüm gider kalemlerinin ayrıntılı grafiği.</p>
+    <div class="go">Grafiği gör →</div>
+  </a>
+  <a class="nav-card" href="gelirler.html">
+    <div class="tag">5 Kalem</div>
+    <h3>Gelirler</h3>
+    <p>Aidat, bakanlık yardımı ve diğer gelir kaynaklarının payı ve ödeme sayıları.</p>
+    <div class="go">Grafiği gör →</div>
+  </a>
+  <a class="nav-card" href="kasa.html">
+    <div class="tag">Bakiye</div>
+    <h3>Kasa &amp; Fon</h3>
+    <p>30 Haziran itibarıyla banka kasası nakit miktarı ve görevli tazminatı fon durumu.</p>
+    <div class="go">Detayları gör →</div>
+  </a>
+</div>
+
+<footer class="page-footer">
+  Not: Giderler BİYOS uygulaması üzerinde de görüntülenmektedir. · Kaynak: 01 Haziran 2026 – 30 Haziran 2026 Gelir Gider Tablosu
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+renderDonut('balanceChart', 'balanceLegend',
+  [
+    { name: 'Gelir', amount: TOTALS.gelir, color: '#1F6F5C' },
+    { name: 'Gider', amount: TOTALS.gider, color: '#A8422A' }
+  ],
+  formatTL(TOTALS.gelir - TOTALS.gider).replace('₺','+ ₺'),
+  'Net Fark'
+);
+</script>
+</body>
+</html>
