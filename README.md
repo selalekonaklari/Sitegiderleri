@@ -1,35 +1,61 @@
-# Haziran 2026 Gelir–Gider Defteri
+# Gelir–Gider Defteri (2024 – 2026)
 
-Site yönetimi Haziran 2026 gelir-gider tablosunun grafikli, çok sayfalı web sitesi. Sadece HTML/CSS/JS ile hazırlandı, herhangi bir kurulum gerektirmez.
+Site yönetimi gelir-gider tablolarının, tüm ayları ve yılları kapsayan, grafikli çok sayfalı web sitesi. Sadece HTML/CSS/JS ile hazırlandı, herhangi bir kurulum ya da internet bağlantısı gerektirmez (grafikler saf CSS ile çizilir, dış kütüphane kullanılmaz).
+
+## Kapsam
+
+**30 ay** (Ocak 2024 – Haziran 2026), `2024_Bilanço.xlsx` dosyasındaki ilgili sayfalardan otomatik çıkarılmıştır.
 
 ## Sayfalar
 
-- `index.html` — Genel bakış (özet rakamlar + gelir/gider dengesi)
-- `giderler.html` — Gider dağılımı (pasta + çubuk grafik, kalem kalem döküm)
-- `gelirler.html` — Gelir dağılımı (pasta + çubuk grafik, kalem kalem döküm)
-- `kasa.html` — Banka kasası nakit miktarı ve fon durumu
-- `assets/data.js` — Tüm rakamlar tek dosyada; **verileri güncellemek için sadece bu dosyayı düzenlemeniz yeterli**
+- `index.html` — Seçili ayın genel bakışı (özet rakamlar + gelir/gider dengesi + özet tablo)
+- `giderler.html` — Seçili ayın gider dağılımı (donut grafik + kalem kalem tablo)
+- `gelirler.html` — Seçili ayın gelir dağılımı (donut grafik + kalem kalem tablo, ödeme sayılarıyla)
+- `kasa.html` — Banka kasası nakit miktarı ve görevli tazminatı fon durumu (ay bazlı; fon dökümü olmayan erken aylarda otomatik gizlenir)
+- `arsiv.html` — Tüm ayları yıl yıl gruplayarak listeler, her yılın toplam gelir/gider/farkını gösterir; bir aya tıklayınca o ayın raporuna gider
+
+Sayfa üstündeki **ay seçici** ile (yıllara göre gruplanmış açılır menü) istediğiniz aya anında geçebilirsiniz — URL'de `?ay=2025-03` gibi bir parametre olarak tutulur, dilediğiniz ayın linkini doğrudan paylaşabilirsiniz.
+
+## Dosya yapısı
+
+- `assets/months-data.js` — **Tüm veri burada.** `MONTH_LIST` (ay listesi, kronolojik) ve `MONTHS` (her ayın gider/gelir/kasa/fon verisi) bu dosyada.
+- `assets/common.js` — Ay seçme, para birimi biçimlendirme, yıl bazlı toplama fonksiyonları
+- `assets/charts.js` — Kütüphane kullanmadan CSS `conic-gradient` ile donut grafik çizen ve renk paleti üreten kod
 - `assets/style.css` — Ortak tasarım
 
 ## GitHub Pages ile yayınlama
 
-1. GitHub'da yeni bir repo oluşturun (örn. `gelir-gider-defteri`).
-2. Bu klasördeki tüm dosyaları repoya yükleyin (sürükle-bırak ile veya `git push` ile).
-3. Repo ayarlarında **Settings → Pages** bölümüne gidin.
-4. **Source** kısmından `main` branch ve `/ (root)` klasörünü seçip **Save** deyin.
-5. Birkaç dakika içinde siteniz şu adreste yayında olur:
-   `https://KULLANICI_ADINIZ.github.io/REPO_ADINIZ/`
+1. GitHub'da bir repo oluşturun.
+2. Bu klasördeki tüm dosya ve klasörleri (özellikle `assets/` klasörünün **tamamını**) repoya yükleyin.
+3. Settings → Pages → Source: `main` branch, `/ (root)` klasörü, Save.
+4. Birkaç dakika içinde site `https://KULLANICI_ADINIZ.github.io/REPO_ADINIZ/` adresinde yayında olur.
+
+## Yeni bir ay eklemek
+
+`assets/months-data.js` dosyasında iki yeri güncellemeniz yeterli:
+
+1. `MONTH_LIST` dizisinin **sonuna** yeni ayı ekleyin:
+   ```js
+   { id: '2026-07', label: 'Temmuz 2026' },
+   ```
+2. Dosyanın sonuna yeni ayın verisini ekleyin (mevcut bir ayın bloğunu kopyalayıp rakamları değiştirmek en kolayı):
+   ```js
+   MONTHS['2026-07'] = {
+     label: 'Temmuz 2026',
+     period: '01 Temmuz 2026 - 31 Temmuz 2026',
+     expenses: [ { name: '...', amount: 0, desc: '...' }, ... ],
+     incomes:  [ { name: '...', amount: 0, count: 0, desc: '' }, ... ],
+     cash: { banka: 0, bankaLabel: null, fonYatan: 0, fonKar: 0, fonToplam: 0 },
+     totals: { gelir: 0, gider: 0, fark: 0 }
+   };
+   ```
+
+Başka hiçbir dosyayı değiştirmenize gerek yok — ay seçici, arşiv sayfası ve tüm grafikler otomatik olarak güncellenir. (Yeni bir aya ait tabloyu bana ilettiğinizde bu iki adımı ben de sizin yerinize yapıp güncel dosyayı verebilirim.)
 
 ## Yerel önizleme
 
-İnternet bağlantınız varsa (grafikler ve yazı tipleri CDN üzerinden yükleniyor), `index.html` dosyasını doğrudan tarayıcıda çift tıklayarak açabilir ya da bir yerel sunucu ile çalıştırabilirsiniz:
+Tüm veriler ve grafikler yerelde (internet olmadan) da çalışır. `index.html` dosyasını çift tıklayarak tarayıcıda açabilirsiniz. İsterseniz bir yerel sunucu da başlatabilirsiniz:
 
 ```bash
 python3 -m http.server 8000
 ```
-
-sonra tarayıcıdan `http://localhost:8000` adresine gidin.
-
-## Verileri sonraki ay için güncelleme
-
-`assets/data.js` içindeki `EXPENSES`, `INCOMES` ve `CASH` dizilerindeki tutarları değiştirmeniz yeterli — tüm grafikler ve sayfalar otomatik olarak güncellenir.

@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Haziran 2026 · Gelir–Gider Defteri</title>
+<title>Gelir–Gider Defteri</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,29 +16,32 @@
   <a href="giderler.html">Giderler</a>
   <a href="gelirler.html">Gelirler</a>
   <a href="kasa.html">Kasa &amp; Fon</a>
+  <a href="arsiv.html">Arşiv</a>
+  <select id="monthSelect" class="month-select"></select>
 </nav>
 
 <header class="page-header">
-  <p class="eyebrow">Site Yönetimi &nbsp;·&nbsp; 01 – 30 Haziran 2026</p>
+  <p class="eyebrow">Site Yönetimi</p>
   <h1>Genel Bakış</h1>
-  <p class="subtitle">Haziran ayına ait gelir ve gider durumunun özeti. Ayrıntılı dağılım için üstteki menüden ilgili sayfaya geçebilirsiniz.</p>
+  <p class="period-badge" id="periodBadge"></p>
+  <p class="subtitle">Seçili aya ait gelir ve gider durumunun özeti. Ayrıntılı dağılım için üstteki menüden ilgili sayfaya, geçmiş aylar için Arşiv'e geçebilirsiniz.</p>
 </header>
 
 <section class="hero">
   <div class="hero-cell income">
     <div class="label">Gelirler Toplamı</div>
-    <div class="amount">₺622.209,00</div>
-    <div class="sub">71 aidat ödemesi dahil, 4 kalemden oluşuyor</div>
+    <div class="amount" id="heroGelir"></div>
+    <div class="sub" id="heroGelirSub"></div>
   </div>
   <div class="hero-cell expense">
     <div class="label">Giderler Toplamı</div>
-    <div class="amount">₺390.105,82</div>
-    <div class="sub">En büyük kalem: Güvenlik (₺190.800,00)</div>
+    <div class="amount" id="heroGider"></div>
+    <div class="sub" id="heroGiderSub"></div>
   </div>
   <div class="hero-cell net">
     <div class="label">Gelir – Gider Farkı</div>
-    <div class="amount">+ ₺232.103,18</div>
-    <div class="sub">Ay sonunda pozitif bakiye</div>
+    <div class="amount" id="heroFark"></div>
+    <div class="sub" id="heroFarkSub"></div>
   </div>
 </section>
 
@@ -53,15 +56,11 @@
           <div class="donut" id="balanceChart"></div>
           <div class="donut-hole"><div class="value"></div><div class="label"></div></div>
         </div>
-        <div class="chart-caption">Toplam ₺1.012.314,82 üzerinden pay</div>
+        <div class="chart-caption" id="balanceCaption"></div>
       </div>
       <div>
         <div class="legend-list" id="balanceLegend"></div>
-        <p style="font-size:13px; color:var(--ink-soft); margin-top:18px; line-height:1.6;">
-          Haziran ayında toplam gelirin <strong style="color:var(--income)">%61,5</strong>'i tahsil edilirken, giderler toplamın
-          <strong style="color:var(--expense)">%38,5</strong>'ini oluşturdu. Aradaki fark olan
-          <strong style="color:var(--navy)">₺232.103,18</strong> kasaya pozitif bakiye olarak yansıdı.
-        </p>
+        <p style="font-size:13px; color:var(--ink-soft); margin-top:18px; line-height:1.6;" id="balanceSummaryText"></p>
       </div>
     </div>
   </div>
@@ -77,54 +76,92 @@
         <thead>
           <tr><th>Kalem</th><th class="num">Tutar</th><th class="num">Toplam İçindeki Pay</th></tr>
         </thead>
-        <tbody>
-          <tr><td class="cat"><span class="cat-dot" style="background:#1F6F5C"></span>Gelirler Toplamı</td><td class="num" style="color:var(--income)">₺622.209,00</td><td class="num">%61,5</td></tr>
-          <tr><td class="cat"><span class="cat-dot" style="background:#A8422A"></span>Giderler Toplamı</td><td class="num" style="color:var(--expense)">₺390.105,82</td><td class="num">%38,5</td></tr>
-        </tbody>
-        <tfoot>
-          <tr><td class="cat">Gelir – Gider Farkı</td><td class="num" colspan="2" style="color:var(--navy)">+ ₺232.103,18</td></tr>
-        </tfoot>
+        <tbody id="summaryTableBody"></tbody>
+        <tfoot id="summaryTableFoot"></tfoot>
       </table>
     </div>
   </div>
 </section>
 
 <div class="nav-cards">
-  <a class="nav-card" href="giderler.html">
-    <div class="tag">12 Kalem</div>
+  <a class="nav-card" id="cardGider" href="giderler.html">
+    <div class="tag" id="cardGiderTag"></div>
     <h3>Giderler</h3>
     <p>Güvenlik, personel, SGK, elektrik, su ve diğer tüm gider kalemlerinin ayrıntılı grafiği.</p>
     <div class="go">Grafiği gör →</div>
   </a>
-  <a class="nav-card" href="gelirler.html">
-    <div class="tag">5 Kalem</div>
+  <a class="nav-card" id="cardGelir" href="gelirler.html">
+    <div class="tag" id="cardGelirTag"></div>
     <h3>Gelirler</h3>
     <p>Aidat, bakanlık yardımı ve diğer gelir kaynaklarının payı ve ödeme sayıları.</p>
     <div class="go">Grafiği gör →</div>
   </a>
-  <a class="nav-card" href="kasa.html">
+  <a class="nav-card" id="cardKasa" href="kasa.html">
     <div class="tag">Bakiye</div>
     <h3>Kasa &amp; Fon</h3>
-    <p>30 Haziran itibarıyla banka kasası nakit miktarı ve görevli tazminatı fon durumu.</p>
+    <p>Ay sonu itibarıyla banka kasası nakit miktarı ve görevli tazminatı fon durumu.</p>
     <div class="go">Detayları gör →</div>
   </a>
 </div>
 
 <footer class="page-footer">
-  Not: Giderler BİYOS uygulaması üzerinde de görüntülenmektedir. · Kaynak: 01 Haziran 2026 – 30 Haziran 2026 Gelir Gider Tablosu
+  Not: Giderler BİYOS uygulaması üzerinde de görüntülenmektedir.
 </footer>
 
-<script src="assets/data.js"></script>
+<script src="assets/months-data.js"></script>
+<script src="assets/common.js"></script>
 <script src="assets/charts.js"></script>
 <script>
+initMonthSelector();
+const monthId = getCurrentMonthId();
+const data = MONTHS[monthId];
+const T = data.totals;
+const grandTotal = T.gelir + T.gider;
+const gelirPct = (T.gelir/grandTotal*100);
+const giderPct = (T.gider/grandTotal*100);
+
+document.getElementById('periodBadge').textContent = data.period;
+document.querySelector('.eyebrow').textContent = 'Site Yönetimi · ' + data.period;
+
+document.getElementById('heroGelir').textContent = formatTL(T.gelir);
+document.getElementById('heroGelirSub').textContent = data.incomes.filter(i=>i.amount>0).length + ' kalemden oluşuyor';
+document.getElementById('heroGider').textContent = formatTL(T.gider);
+const topExpense = [...data.expenses].sort((a,b)=>b.amount-a.amount)[0];
+document.getElementById('heroGiderSub').textContent = 'En büyük kalem: ' + topExpense.name + ' (' + formatTL(topExpense.amount) + ')';
+document.getElementById('heroFark').textContent = (T.fark >= 0 ? '+ ' : '') + formatTL(T.fark);
+document.getElementById('heroFarkSub').textContent = T.fark >= 0 ? 'Ay sonunda pozitif bakiye' : 'Ay sonunda açık';
+
+document.getElementById('balanceCaption').textContent = 'Toplam ' + formatTL(grandTotal) + ' üzerinden pay';
+document.getElementById('balanceSummaryText').innerHTML =
+  data.label + ' ayında toplam gelirin <strong style="color:var(--income)">%' + gelirPct.toFixed(1) + '</strong>\'i tahsil edilirken, giderler toplamın ' +
+  '<strong style="color:var(--expense)">%' + giderPct.toFixed(1) + '</strong>\'ini oluşturdu. Aradaki fark olan ' +
+  '<strong style="color:var(--navy)">' + formatTL(Math.abs(T.fark)) + '</strong> kasaya ' + (T.fark >= 0 ? 'pozitif bakiye' : 'açık') + ' olarak yansıdı.';
+
 renderDonut('balanceChart', 'balanceLegend',
   [
-    { name: 'Gelir', amount: TOTALS.gelir, color: '#1F6F5C' },
-    { name: 'Gider', amount: TOTALS.gider, color: '#A8422A' }
+    { name: 'Gelir', amount: T.gelir, color: '#1F6F5C' },
+    { name: 'Gider', amount: T.gider, color: '#A8422A' }
   ],
-  formatTL(TOTALS.gelir - TOTALS.gider).replace('₺','+ ₺'),
+  (T.fark >= 0 ? '+ ' : '') + formatTL(T.fark),
   'Net Fark'
 );
+
+document.getElementById('summaryTableBody').innerHTML = `
+  <tr><td class="cat"><span class="cat-dot" style="background:#1F6F5C"></span>Gelirler Toplamı</td><td class="num" style="color:var(--income)">${formatTL(T.gelir)}</td><td class="num">%${gelirPct.toFixed(1)}</td></tr>
+  <tr><td class="cat"><span class="cat-dot" style="background:#A8422A"></span>Giderler Toplamı</td><td class="num" style="color:var(--expense)">${formatTL(T.gider)}</td><td class="num">%${giderPct.toFixed(1)}</td></tr>
+`;
+document.getElementById('summaryTableFoot').innerHTML = `
+  <tr><td class="cat">Gelir – Gider Farkı</td><td class="num" colspan="2" style="color:var(--navy)">${(T.fark >= 0 ? '+ ' : '')}${formatTL(T.fark)}</td></tr>
+`;
+
+document.getElementById('cardGiderTag').textContent = data.expenses.length + ' Kalem';
+document.getElementById('cardGelirTag').textContent = data.incomes.filter(i=>i.amount>0).length + ' Kalem';
+document.querySelectorAll('.nav-card').forEach(a => { a.href = a.getAttribute('href') + '?ay=' + monthId; });
+document.querySelectorAll('.topnav a').forEach(a => {
+  if (a.getAttribute('href') !== 'arsiv.html') {
+    a.href = a.getAttribute('href').split('?')[0] + '?ay=' + monthId;
+  }
+});
 </script>
 </body>
 </html>

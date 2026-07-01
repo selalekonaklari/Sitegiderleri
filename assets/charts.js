@@ -1,6 +1,22 @@
 // Harici kütüphane kullanmadan, sadece CSS conic-gradient ile donut grafik oluşturur.
+
+// Kategori sayısı ay ay değiştiği için renkler sabit değil, sıraya göre üretilir.
+// type: 'expense' (kırmızı-turuncu tonları) veya 'income' (yeşil-teal tonları)
+function paletteColor(type, index, total){
+  const hue = type === 'expense' ? 14 : 165;
+  const span = Math.max(total - 1, 1);
+  const light = 34 + (index * (44 / span));
+  const sat = 62 - (index * (18 / span));
+  return `hsl(${hue}, ${sat.toFixed(0)}%, ${light.toFixed(0)}%)`;
+}
+
+// items: [{name, amount}] -> aynı diziyi renk atanmış olarak döner (sıralı: büyükten küçüğe varsayılır)
+function assignColors(items, type){
+  const total = items.length;
+  return items.map((it, i) => Object.assign({}, it, { color: paletteColor(type, i, total) }));
+}
+
 // items: [{name, amount, color}], donutElId: donut div id, legendElId: legend liste id
-// centerValue/centerLabel: donut ortasındaki yazı
 function renderDonut(donutElId, legendElId, items, centerValue, centerLabel){
   const total = items.reduce((s,i) => s + i.amount, 0);
   let cursor = 0;

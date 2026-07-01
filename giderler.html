@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Giderler · Haziran 2026</title>
+<title>Giderler · Gelir–Gider Defteri</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,18 +16,21 @@
   <a href="giderler.html" class="active">Giderler</a>
   <a href="gelirler.html">Gelirler</a>
   <a href="kasa.html">Kasa &amp; Fon</a>
+  <a href="arsiv.html">Arşiv</a>
+  <select id="monthSelect" class="month-select"></select>
 </nav>
 
 <header class="page-header">
-  <p class="eyebrow">Site Yönetimi &nbsp;·&nbsp; 01 – 30 Haziran 2026</p>
+  <p class="eyebrow">Site Yönetimi</p>
   <h1>Gider Dağılımı</h1>
-  <p class="subtitle">12 gider kalemi, toplam ₺390.105,82. Grafikte her dilim, o kalemin toplam gider içindeki payını gösterir.</p>
+  <p class="period-badge" id="periodBadge"></p>
+  <p class="subtitle" id="pageSubtitle"></p>
 </header>
 
 <section class="section">
   <div class="section-head">
     <h2>Kategoriye Göre Pay</h2>
-    <div class="total mono" style="color:var(--expense)">₺390.105,82</div>
+    <div class="total mono" style="color:var(--expense)" id="headTotal"></div>
   </div>
   <div class="section-body">
     <div class="chart-grid">
@@ -36,7 +39,7 @@
           <div class="donut" id="expenseDonut"></div>
           <div class="donut-hole"><div class="value"></div><div class="label"></div></div>
         </div>
-        <div class="chart-caption">12 kalem · Kategoriye göre yüzde pay</div>
+        <div class="chart-caption" id="chartCaption"></div>
       </div>
       <div class="legend-list" id="expenseLegend"></div>
     </div>
@@ -60,9 +63,7 @@
           </tr>
         </thead>
         <tbody id="expenseTableBody"></tbody>
-        <tfoot>
-          <tr><td class="cat">Toplam</td><td></td><td class="num" style="color:var(--expense)">₺390.105,82</td><td class="num">%100</td><td></td></tr>
-        </tfoot>
+        <tfoot id="expenseTableFoot"></tfoot>
       </table>
     </div>
   </div>
@@ -72,11 +73,22 @@
   Not: Giderler BİYOS uygulaması üzerinde de görüntülenmektedir.
 </footer>
 
-<script src="assets/data.js"></script>
+<script src="assets/months-data.js"></script>
+<script src="assets/common.js"></script>
 <script src="assets/charts.js"></script>
 <script>
-const sorted = [...EXPENSES].sort((a,b) => b.amount - a.amount);
+initMonthSelector();
+const monthId = getCurrentMonthId();
+const data = MONTHS[monthId];
+const sortedRaw = [...data.expenses].sort((a,b) => b.amount - a.amount);
+const sorted = assignColors(sortedRaw, 'expense');
 const total = sorted.reduce((s,e) => s + e.amount, 0);
+
+document.getElementById('periodBadge').textContent = data.period;
+document.querySelector('.eyebrow').textContent = 'Site Yönetimi · ' + data.period;
+document.getElementById('pageSubtitle').textContent = sorted.length + ' gider kalemi, toplam ' + formatTL(total) + '. Grafikte her dilim, o kalemin toplam gider içindeki payını gösterir.';
+document.getElementById('headTotal').textContent = formatTL(total);
+document.getElementById('chartCaption').textContent = sorted.length + ' kalem · Kategoriye göre yüzde pay';
 
 renderDonut('expenseDonut', 'expenseLegend', sorted, formatTL(total), 'Toplam Gider');
 
@@ -93,6 +105,15 @@ sorted.forEach(e => {
     <td class="mini-bar-cell"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%; background:${e.color}"></div></div></td>
   `;
   body.appendChild(tr);
+});
+document.getElementById('expenseTableFoot').innerHTML = `
+  <tr><td class="cat">Toplam</td><td></td><td class="num" style="color:var(--expense)">${formatTL(total)}</td><td class="num">%100</td><td></td></tr>
+`;
+
+document.querySelectorAll('.topnav a').forEach(a => {
+  if (a.getAttribute('href') !== 'arsiv.html') {
+    a.href = a.getAttribute('href').split('?')[0] + '?ay=' + monthId;
+  }
 });
 </script>
 </body>

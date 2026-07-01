@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Arşiv · Gelir–Gider Defteri</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .year-block{ margin:34px 6vw 0 6vw; }
+  .year-title{
+    display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    border-bottom:2px solid var(--navy); padding-bottom:10px; margin-bottom:16px;
+  }
+  .year-title h2{ font-family:'Fraunces',serif; font-size:28px; font-weight:600; margin:0; color:var(--navy); }
+  .year-stats{ display:flex; gap:22px; flex-wrap:wrap; font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
+  .year-stats .stat b{ display:block; font-family:'Fraunces',serif; font-size:16px; font-weight:600; }
+  .year-stats .stat.income b{ color:var(--income); }
+  .year-stats .stat.expense b{ color:var(--expense); }
+  .year-stats .stat.net b{ color:var(--navy); }
+  .month-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:12px;
+  }
+  .month-card{
+    display:block; text-decoration:none; background:var(--surface); border:1px solid var(--border);
+    padding:16px 18px; transition:border-color .15s, transform .15s;
+  }
+  .month-card:hover{ border-color:var(--navy); transform:translateY(-2px); }
+  .month-card .m-label{ font-family:'Fraunces',serif; font-size:16px; font-weight:600; margin-bottom:8px; }
+  .month-card .m-row{ display:flex; justify-content:space-between; font-size:11.5px; font-family:'IBM Plex Mono',monospace; margin-top:3px; }
+  .month-card .m-row.income span:last-child{ color:var(--income); }
+  .month-card .m-row.expense span:last-child{ color:var(--expense); }
+  .month-card .m-row.net span:last-child{ font-weight:700; }
+  @media (max-width:560px){ .year-block{margin-left:5vw; margin-right:5vw;} }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="brand">Gelir–Gider Defteri</span>
+  <a href="index.html">Genel Bakış</a>
+  <a href="giderler.html">Giderler</a>
+  <a href="gelirler.html">Gelirler</a>
+  <a href="kasa.html">Kasa &amp; Fon</a>
+  <a href="arsiv.html" class="active">Arşiv</a>
+</nav>
+
+<header class="page-header">
+  <p class="eyebrow">Site Yönetimi</p>
+  <h1>Arşiv</h1>
+  <p class="subtitle">2024'ten bugüne tüm ayların gelir-gider kayıtları, yıl yıl gruplanmış. Bir aya tıklayarak o ayın ayrıntılı raporunu açabilirsiniz.</p>
+</header>
+
+<div id="yearsContainer"></div>
+
+<footer class="page-footer" style="margin-top:34px;">
+  Kaynak: Gelir Gider Tablosu · 2024 – 2026
+</footer>
+
+<script src="assets/months-data.js"></script>
+<script src="assets/common.js"></script>
+<script>
+const years = [...new Set(MONTH_LIST.map(m => m.id.slice(0,4)))].sort((a,b) => b.localeCompare(a));
+const container = document.getElementById('yearsContainer');
+
+years.forEach(year => {
+  const summary = getYearSummary(year);
+  const monthsDesc = MONTH_LIST.filter(m => m.id.startsWith(year)).slice().reverse();
+
+  const block = document.createElement('div');
+  block.className = 'year-block';
+  block.innerHTML = `
+    <div class="year-title">
+      <h2>${year}</h2>
+      <div class="year-stats">
+        <div class="stat income"><b>${formatTL(summary.gelir)}</b>Toplam Gelir · ${summary.monthCount} ay</div>
+        <div class="stat expense"><b>${formatTL(summary.gider)}</b>Toplam Gider</div>
+        <div class="stat net"><b>${(summary.fark>=0?'+ ':'')+formatTL(summary.fark)}</b>Yıl Farkı</div>
+      </div>
+    </div>
+    <div class="month-grid">
+      ${monthsDesc.map(m => {
+        const d = MONTHS[m.id];
+        const t = d.totals;
+        return `
+        <a class="month-card" href="index.html?ay=${m.id}">
+          <div class="m-label">${d.label}</div>
+          <div class="m-row income"><span>Gelir</span><span>${formatTL(t.gelir)}</span></div>
+          <div class="m-row expense"><span>Gider</span><span>${formatTL(t.gider)}</span></div>
+          <div class="m-row net"><span>Fark</span><span style="color:${t.fark>=0?'var(--income)':'var(--expense)'}">${(t.fark>=0?'+ ':'')+formatTL(t.fark)}</span></div>
+        </a>`;
+      }).join('')}
+    </div>
+  `;
+  container.appendChild(block);
+});
+</script>
+</body>
+</html>

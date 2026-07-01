@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Kasa & Fon · Haziran 2026</title>
+<title>Kasa & Fon · Gelir–Gider Defteri</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,26 +16,29 @@
   <a href="giderler.html">Giderler</a>
   <a href="gelirler.html">Gelirler</a>
   <a href="kasa.html" class="active">Kasa &amp; Fon</a>
+  <a href="arsiv.html">Arşiv</a>
+  <select id="monthSelect" class="month-select"></select>
 </nav>
 
 <header class="page-header">
-  <p class="eyebrow">Site Yönetimi &nbsp;·&nbsp; 30 Haziran 2026 İtibarıyla</p>
+  <p class="eyebrow">Site Yönetimi</p>
   <h1>Kasa &amp; Fon Durumu</h1>
+  <p class="period-badge" id="periodBadge"></p>
   <p class="subtitle">Banka kasasındaki nakit miktarı ve görevli tazminatı fon hesabının detayı.</p>
 </header>
 
 <section class="hero" style="grid-template-columns:1fr;">
   <div class="hero-cell net">
-    <div class="label">Banka Kasası Toplam Nakit Miktarı — 30 Haziran</div>
-    <div class="amount" style="font-size:clamp(28px,4vw,44px);">₺360.222,65</div>
+    <div class="label" id="bankLabel"></div>
+    <div class="amount" style="font-size:clamp(28px,4vw,44px);" id="bankAmount"></div>
     <div class="sub">Ay sonu itibarıyla banka ve kasadaki toplam nakit tutarı</div>
   </div>
 </section>
 
-<section class="section" style="margin-top:24px;">
+<section class="section" style="margin-top:24px;" id="fundSection">
   <div class="section-head">
     <h2>Görevli Tazminatı Fon Hesabı</h2>
-    <div class="total mono" style="color:var(--navy)">₺498.393,38</div>
+    <div class="total mono" style="color:var(--navy)" id="fundHeadTotal"></div>
   </div>
   <div class="section-body">
     <div class="chart-grid">
@@ -55,39 +58,69 @@
           <tr><th>Kalem</th><th class="num">Tutar</th><th class="num">Pay</th><th></th></tr>
         </thead>
         <tbody id="fundTableBody"></tbody>
-        <tfoot>
-          <tr><td class="cat">Yatan Miktar + Kâr Toplam Tutarı</td><td class="num" colspan="2" style="color:var(--navy)">₺498.393,38</td><td></td></tr>
-        </tfoot>
+        <tfoot id="fundTableFoot"></tfoot>
       </table>
     </div>
   </div>
 </section>
 
 <footer class="page-footer">
-  Kaynak: 01 Haziran 2026 – 30 Haziran 2026 Gelir Gider Tablosu
+  Kaynak: Gelir Gider Tablosu
 </footer>
 
-<script src="assets/data.js"></script>
+<script src="assets/months-data.js"></script>
+<script src="assets/common.js"></script>
 <script src="assets/charts.js"></script>
 <script>
-const fundItems = [
-  { name: 'Yatan Miktar', amount: CASH.fonYatanMiktar, color: '#1B3A63' },
-  { name: 'Fon Getiri Kârı', amount: CASH.fonKarMiktar, color: '#B9902A' }
-];
+initMonthSelector();
+const monthId = getCurrentMonthId();
+const data = MONTHS[monthId];
+const C = data.cash;
 
-renderDonut('fundChart', 'fundLegend', fundItems, formatTL(CASH.fonToplam), 'Toplam Tutar');
+document.getElementById('periodBadge').textContent = data.period;
+document.querySelector('.eyebrow').textContent = 'Site Yönetimi · ' + data.period + ' İtibarıyla';
+document.getElementById('bankLabel').textContent = C.bankaLabel || ('Banka Kasası Toplam Nakit Miktarı — ' + data.label);
+document.getElementById('bankAmount').textContent = formatTL(C.banka);
 
-const body = document.getElementById('fundTableBody');
-fundItems.forEach(i => {
-  const pct = (i.amount / CASH.fonToplam) * 100;
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td class="cat"><span class="cat-dot" style="background:${i.color}"></span>${i.name}</td>
-    <td class="num">${formatTL(i.amount)}</td>
-    <td class="num">%${pct.toFixed(1)}</td>
-    <td class="mini-bar-cell"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%; background:${i.color}"></div></div></td>
+if (C.fonYatan == null || C.fonKar == null) {
+  document.getElementById('fundSection').innerHTML = `
+    <div class="section-head"><h2>Görevli Tazminatı Fon Hesabı</h2></div>
+    <div class="section-body"><p style="font-size:13px; color:var(--ink-soft);">Bu ay için ayrı bir fon dökümü kayda geçmemiştir.</p></div>
   `;
-  body.appendChild(tr);
+} else {
+  document.getElementById('fundHeadTotal').textContent = formatTL(C.fonToplam);
+  const fundItemsRaw = [
+    { name: 'Yatan Miktar', amount: C.fonYatan },
+    { name: 'Fon Getiri Kârı', amount: C.fonKar }
+  ];
+  const fundItems = [
+    Object.assign({}, fundItemsRaw[0], { color: '#1B3A63' }),
+    Object.assign({}, fundItemsRaw[1], { color: '#B9902A' })
+  ];
+
+  renderDonut('fundChart', 'fundLegend', fundItems, formatTL(C.fonToplam), 'Toplam Tutar');
+
+  const body = document.getElementById('fundTableBody');
+  fundItems.forEach(i => {
+    const pct = (i.amount / C.fonToplam) * 100;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="cat"><span class="cat-dot" style="background:${i.color}"></span>${i.name}</td>
+      <td class="num">${formatTL(i.amount)}</td>
+      <td class="num">%${pct.toFixed(1)}</td>
+      <td class="mini-bar-cell"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%; background:${i.color}"></div></div></td>
+    `;
+    body.appendChild(tr);
+  });
+  document.getElementById('fundTableFoot').innerHTML = `
+    <tr><td class="cat">Yatan Miktar + Kâr Toplam Tutarı</td><td class="num" colspan="2" style="color:var(--navy)">${formatTL(C.fonToplam)}</td><td></td></tr>
+  `;
+}
+
+document.querySelectorAll('.topnav a').forEach(a => {
+  if (a.getAttribute('href') !== 'arsiv.html') {
+    a.href = a.getAttribute('href').split('?')[0] + '?ay=' + monthId;
+  }
 });
 </script>
 </body>
