@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Giderler · Haziran 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="brand">Gelir–Gider Defteri</span>
+  <a href="index.html">Genel Bakış</a>
+  <a href="giderler.html" class="active">Giderler</a>
+  <a href="gelirler.html">Gelirler</a>
+  <a href="kasa.html">Kasa &amp; Fon</a>
+</nav>
+
+<header class="page-header">
+  <p class="eyebrow">Site Yönetimi &nbsp;·&nbsp; 01 – 30 Haziran 2026</p>
+  <h1>Gider Dağılımı</h1>
+  <p class="subtitle">12 gider kalemi, toplam ₺390.105,82. Grafikte her dilim, o kalemin toplam gider içindeki payını gösterir.</p>
+</header>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Kategoriye Göre Pay</h2>
+    <div class="total mono" style="color:var(--expense)">₺390.105,82</div>
+  </div>
+  <div class="section-body">
+    <div class="chart-grid">
+      <div class="chart-box">
+        <div class="donut-wrap" id="expenseDonutWrap">
+          <div class="donut" id="expenseDonut"></div>
+          <div class="donut-hole"><div class="value"></div><div class="label"></div></div>
+        </div>
+        <div class="chart-caption">12 kalem · Kategoriye göre yüzde pay</div>
+      </div>
+      <div class="legend-list" id="expenseLegend"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top:24px;">
+  <div class="section-head">
+    <h2>Kalem Kalem Döküm</h2>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Gider Kategorisi</th>
+            <th>Açıklama</th>
+            <th class="num">Tutar</th>
+            <th class="num">Pay</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="expenseTableBody"></tbody>
+        <tfoot>
+          <tr><td class="cat">Toplam</td><td></td><td class="num" style="color:var(--expense)">₺390.105,82</td><td class="num">%100</td><td></td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  Not: Giderler BİYOS uygulaması üzerinde de görüntülenmektedir.
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+const sorted = [...EXPENSES].sort((a,b) => b.amount - a.amount);
+const total = sorted.reduce((s,e) => s + e.amount, 0);
+
+renderDonut('expenseDonut', 'expenseLegend', sorted, formatTL(total), 'Toplam Gider');
+
+const body = document.getElementById('expenseTableBody');
+sorted.forEach(e => {
+  const pct = (e.amount/total*100);
+  const tr = document.createElement('tr');
+  if (pct > 20) tr.className = 'highlight-tr';
+  tr.innerHTML = `
+    <td class="cat"><span class="cat-dot" style="background:${e.color}"></span>${e.name}</td>
+    <td class="desc">${e.desc}</td>
+    <td class="num">${formatTL(e.amount)}</td>
+    <td class="num">%${pct.toFixed(1)}</td>
+    <td class="mini-bar-cell"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%; background:${e.color}"></div></div></td>
+  `;
+  body.appendChild(tr);
+});
+</script>
+</body>
+</html>

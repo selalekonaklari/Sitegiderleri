@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Gelirler · Haziran 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="brand">Gelir–Gider Defteri</span>
+  <a href="index.html">Genel Bakış</a>
+  <a href="giderler.html">Giderler</a>
+  <a href="gelirler.html" class="active">Gelirler</a>
+  <a href="kasa.html">Kasa &amp; Fon</a>
+</nav>
+
+<header class="page-header">
+  <p class="eyebrow">Site Yönetimi &nbsp;·&nbsp; 01 – 30 Haziran 2026</p>
+  <h1>Gelir Dağılımı</h1>
+  <p class="subtitle">5 gelir kalemi, toplam ₺622.209,00. Grafikte her dilim, o kalemin toplam gelir içindeki payını gösterir.</p>
+</header>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Kaynağa Göre Pay</h2>
+    <div class="total mono" style="color:var(--income)">₺622.209,00</div>
+  </div>
+  <div class="section-body">
+    <div class="chart-grid">
+      <div class="chart-box">
+        <div class="donut-wrap" id="incomeDonutWrap">
+          <div class="donut" id="incomeDonut"></div>
+          <div class="donut-hole"><div class="value"></div><div class="label"></div></div>
+        </div>
+        <div class="chart-caption">5 kalem · Kaynağa göre yüzde pay</div>
+      </div>
+      <div class="legend-list" id="incomeLegend"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top:24px;">
+  <div class="section-head">
+    <h2>Kalem Kalem Döküm</h2>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Gelir Kategorisi</th>
+            <th>Açıklama</th>
+            <th class="num">Ödeme Sayısı</th>
+            <th class="num">Tutar</th>
+            <th class="num">Pay</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="incomeTableBody"></tbody>
+        <tfoot>
+          <tr><td class="cat">Toplam</td><td></td><td></td><td class="num" style="color:var(--income)">₺622.209,00</td><td class="num">%100</td><td></td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  Kaynak: 01 Haziran 2026 – 30 Haziran 2026 Gelir Gider Tablosu
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+const sorted = [...INCOMES].filter(i => i.amount > 0).sort((a,b) => b.amount - a.amount);
+const zeroItems = INCOMES.filter(i => i.amount === 0);
+const total = sorted.reduce((s,e) => s + e.amount, 0);
+
+renderDonut('incomeDonut', 'incomeLegend', sorted, formatTL(total), 'Toplam Gelir');
+
+const body = document.getElementById('incomeTableBody');
+[...sorted, ...zeroItems].forEach(e => {
+  const pct = e.amount > 0 ? (e.amount/total*100) : 0;
+  const tr = document.createElement('tr');
+  let cls = [];
+  if (pct > 25 && e.amount !== sorted[0].amount) cls.push('highlight-tr');
+  if (e.amount === 0) cls.push('zero-tr');
+  tr.className = cls.join(' ');
+  tr.innerHTML = `
+    <td class="cat"><span class="cat-dot" style="background:${e.color}"></span>${e.name}</td>
+    <td class="desc">${e.desc}</td>
+    <td class="count">${e.count}</td>
+    <td class="num">${formatTL(e.amount)}</td>
+    <td class="num">${e.amount > 0 ? '%' + pct.toFixed(1) : '—'}</td>
+    <td class="mini-bar-cell"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%; background:${e.color}"></div></div></td>
+  `;
+  body.appendChild(tr);
+});
+</script>
+</body>
+</html>
