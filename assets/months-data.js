@@ -30,6 +30,7 @@ const MONTH_LIST = [
   { id: '2026-04', label: 'Nisan 2026' },
   { id: '2026-05', label: 'Mayıs 2026' },
   { id: '2026-06', label: 'Haziran 2026' },
+  { id: '2026-07', label: 'Temmuz 2026' },
 ];
 
 const MONTHS = {};
@@ -827,4 +828,34 @@ MONTHS['2026-06'] = {
   ],
   cash: { banka: 360222.65, bankaLabel: "Banka Kasası Toplam Nakit Miktarı 30 Haziran", fonYatan: 319500.0, fonKar: 154719.48, fonToplam: 498393.38 },
   totals: { gelir: 622209.0, gider: 390105.82, fark: 232103.18 }
+};
+MONTHS['2026-07'] = {
+  label: 'Temmuz 2026',
+  period: '01 Temmuz 2026 - 30 Temmuz 2026',
+  expenses: [
+    { name: 'Güvenlik', amount: 197176.76, desc: 'Temmuz Ayı Güvenlik firması ödemesi +Resmi Tatil +havale' },
+    { name: 'Bakım Onarım', amount: 65016.76, desc: '4 Daire Tavan+Balkon Boyaması (fırtına kaynaklı)' },
+    { name: 'Personel', amount: 28862.63, desc: 'Temmuz ayına ait Personel Maaşı' },
+    { name: 'Su', amount: 28496.00, desc: 'Ortak Su giderleri' },
+    { name: 'Fon Hesabı', amount: 10650.00, desc: 'Bayram Söylemez Kıdem Tazminatı' },
+    { name: 'Elektrik', amount: 14440.00, desc: 'Ortak Elektrik Giderleri' },
+    { name: 'Asansör Bakım', amount: 9616.74, desc: 'Haziran Temmuz Bakım +Paten ve Yay değişimi-Havale' },
+    { name: 'Bahçe Kimyasal', amount: 4108.43, desc: 'Bahçe İlaçlaması için gerekli zirai ilaçlar' },
+    { name: 'Doğalgaz', amount: 340.00, desc: 'Görevli Kullanım' },
+    { name: 'Temizlik', amount: 716.37, desc: '2x40 Tuvalet Kağıdı havale' },
+    { name: 'Banka Masrafı', amount: 7.61, desc: '' }
+  ],
+  incomes: [
+    { name: 'Aidat', amount: 337250.00, count: 71, desc: '' },
+    { name: 'Geciken Aidat', amount: 0, count: 0, desc: '' },
+    { name: 'Aydem Şarj İstasyonu Yer Tahsis Ücreti', amount: 833.00, count: 1, desc: '' }
+  ],
+  cash: {
+    banka: 338042.06,
+    bankaLabel: 'Banka Kasası Toplam Nakit Miktarı — 30 Temmuz',
+    fonYatan: 330150.00,
+    fonKar: 193439.28,
+    fonToplam: 523589.28
+  },
+  totals: { gelir: 338083.00, gider: 359431.30, fark: -21348.30 }
 };
